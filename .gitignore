@@ -1,0 +1,36 @@
+# Secrets en lokale configuratie
+.env
+.env.*
+!.env.example
+*.parameters.json
+!*.parameters.example.json
+local.settings.json
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# Azure
+.azure/
+
+# macOS
+.DS_Store
+
+# azd-parameters: alleen ${...}-verwijzingen, geen echte waarden
+!infra/main.parameters.json
+
+# Bicep-bouwresultaat
+infra/main.json

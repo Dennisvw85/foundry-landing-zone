@@ -1,0 +1,4 @@
+name: foundry-landing-zone
+infra:
+  provider: bicep
+  path: infra
