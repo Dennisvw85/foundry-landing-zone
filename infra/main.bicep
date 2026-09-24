@@ -14,6 +14,15 @@ param principalId string
 @allowed(['User', 'ServicePrincipal'])
 param principalType string = 'User'
 
+@description('E-mailadres voor budgetwaarschuwingen; leeg = geen budget aanmaken')
+param budgetContactEmail string = ''
+
+@description('Maandbudget in de valuta van de subscription')
+param budgetAmount int = 50
+
+@description('Startdatum van het budget, altijd de eerste van een maand')
+param budgetStartDate string = '2026-09-01'
+
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
 
@@ -21,6 +30,39 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: 'rg-${environmentName}'
   location: location
   tags: tags
+}
+
+resource budget 'Microsoft.Consumption/budgets@2024-08-01' = if (!empty(budgetContactEmail)) {
+  name: 'budget-${environmentName}'
+  properties: {
+    category: 'Cost'
+    amount: budgetAmount
+    timeGrain: 'Monthly'
+    timePeriod: { startDate: budgetStartDate }
+    notifications: {
+      actual50: {
+        enabled: true
+        operator: 'GreaterThanOrEqualTo'
+        threshold: 50
+        thresholdType: 'Actual'
+        contactEmails: [budgetContactEmail]
+      }
+      actual80: {
+        enabled: true
+        operator: 'GreaterThanOrEqualTo'
+        threshold: 80
+        thresholdType: 'Actual'
+        contactEmails: [budgetContactEmail]
+      }
+      forecast100: {
+        enabled: true
+        operator: 'GreaterThanOrEqualTo'
+        threshold: 100
+        thresholdType: 'Forecasted'
+        contactEmails: [budgetContactEmail]
+      }
+    }
+  }
 }
 
 module monitoring 'monitoring.bicep' = {
