@@ -23,8 +23,15 @@ module foundry 'foundry.bicep' = {
     name: 'fdy-${resourceToken}'
     location: location
     tags: tags
+    projectName: 'proj-${environmentName}'
+    modelName: 'gpt-4.1-mini'
+    modelVersion: '2025-04-14'
+    modelCapacity: 30
   }
 }
 
 output AZURE_RESOURCE_GROUP string = rg.name
 output AZURE_FOUNDRY_NAME string = foundry.outputs.name
+output AZURE_FOUNDRY_ENDPOINT string = foundry.outputs.endpoint
+output AZURE_AI_PROJECT_ENDPOINT string = foundry.outputs.projectEndpoint
+output AZURE_AI_MODEL_DEPLOYMENT_NAME string = foundry.outputs.modelDeploymentName
