@@ -6,6 +6,7 @@
     "location": { "value": "${AZURE_LOCATION}" },
     "principalId": { "value": "${AZURE_PRINCIPAL_ID}" },
     "principalType": { "value": "${AZURE_PRINCIPAL_TYPE}" },
-    "budgetContactEmail": { "value": "${AZURE_BUDGET_EMAIL}" }
+    "budgetContactEmail": { "value": "${AZURE_BUDGET_EMAIL}" },
+    "revision": { "value": "${AZURE_RESOURCE_REVISION}" }
   }
 }

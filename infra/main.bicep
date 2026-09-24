@@ -11,6 +11,9 @@ param location string
 @description('Object-ID van wie de Foundry User-rol krijgt; azd vult dit zelf in')
 param principalId string
 
+@description('Ophogen na een purge: Foundry kent een hergebruikte accountnaam urenlang niet terug (404 Project not found)')
+param revision string = ''
+
 @allowed(['User', 'ServicePrincipal'])
 param principalType string = 'User'
 
@@ -23,7 +26,9 @@ param budgetAmount int = 50
 @description('Startdatum van het budget, altijd de eerste van een maand')
 param budgetStartDate string = '2026-09-01'
 
-var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
+var resourceToken = toLower(empty(revision)
+  ? uniqueString(subscription().id, environmentName, location)
+  : uniqueString(subscription().id, environmentName, location, revision))
 var tags = { 'azd-env-name': environmentName }
 
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {

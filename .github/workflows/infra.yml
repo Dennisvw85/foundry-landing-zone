@@ -36,6 +36,7 @@ jobs:
     env:
       AZURE_ENV_NAME: dev
       AZURE_LOCATION: swedencentral
+      AZURE_RESOURCE_REVISION: ${{ vars.AZURE_RESOURCE_REVISION }}
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
