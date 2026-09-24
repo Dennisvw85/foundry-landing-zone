@@ -5,6 +5,9 @@ param projectName string
 param modelName string
 param modelVersion string
 param modelCapacity int
+param principalId string
+param principalType string
+param appInsightsName string
 
 resource foundry 'Microsoft.CognitiveServices/accounts@2026-07-01' = {
   name: name
@@ -51,6 +54,40 @@ resource model 'Microsoft.CognitiveServices/accounts/deployments@2026-07-01' = {
   dependsOn: [
     project
   ]
+}
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: appInsightsName
+}
+
+resource appInsightsConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-07-01' = {
+  parent: project
+  name: 'appi-connection'
+  properties: {
+    category: 'AppInsights'
+    target: appInsights.id
+    authType: 'ApiKey'
+    isSharedToAll: true
+    credentials: {
+      key: appInsights.properties.ConnectionString
+    }
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: appInsights.id
+    }
+  }
+}
+
+var foundryUserRoleId = '53ca6127-db72-4b80-b1b0-d745d6d5456d'
+
+resource foundryUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: foundry
+  name: guid(foundry.id, principalId, foundryUserRoleId)
+  properties: {
+    principalId: principalId
+    principalType: principalType
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', foundryUserRoleId)
+  }
 }
 
 output name string = foundry.name
